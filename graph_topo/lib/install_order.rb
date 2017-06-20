@@ -10,5 +10,22 @@
 
 
 def install_order(arr)
+  max_id = arr.flatten.max
+  packages = (1..max_id).to_a
+  sorted = find_no_dependencies(arr, packages)
+  until sorted.length == max_id
+    arr.reject! {|el| sorted.include?(el[1]) }
+    if arr.empty?
+      sorted += packages-sorted
+      break
+    end
+    no_dependents = packages - arr.transpose[0]
+    sorted += (no_dependents-sorted)
+  end
+  sorted
+end
 
+def find_no_dependencies(arr, packages)
+  dependents = arr.transpose[0]
+  packages - dependents
 end

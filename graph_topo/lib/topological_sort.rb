@@ -20,7 +20,7 @@ require_relative 'graph'
 #   end
 #   return [] unless sorted.length == vertices.length
 #   sorted
-# 
+#
 # end
 
 def topological_sort(vertices)

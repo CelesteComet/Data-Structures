@@ -1,6 +1,7 @@
 class DynamicProgramming
   def initialize
     @blair_cache = {1=>1, 2=> 2}
+    @frog_cache = {1=>[[1]], 2=>[[1,1],[2]], 3=>[[1, 1, 1], [1, 2], [2, 1],[3]]}
   end
 
   def blair_nums(n)
@@ -11,8 +12,10 @@ class DynamicProgramming
   end
 
   def frog_hops(n)
-    cache = frog_cache_builder(n)
-    cache[n]
+    return nil if n > 999
+    # cache = frog_cache_builder(n)
+    # cache[n]
+    frog_hops_top_down(n)
   end
 
   def frog_cache_builder(n)
@@ -28,6 +31,14 @@ class DynamicProgramming
   end
 
   def frog_hops_top_down(n)
+    return @frog_cache[n] if @frog_cache[n]
+    p n
+    cache_1 = frog_hops_top_down(n-1).map {|arr| arr + [1] }
+    cache_2 = frog_hops_top_down(n-2).map {|arr| arr + [2] }
+    cache_3 = frog_hops_top_down(n-3).map {|arr| arr + [3] }
+    @frog_cache[n] = cache_1 + cache_2 + cache_3
+    @frog_cache[n]
+
   end
 
   def super_frog_hops(n, k)

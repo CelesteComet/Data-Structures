@@ -6,13 +6,26 @@ class DynamicProgramming
     @frog_cache = {1=>[[1]], 2=>[[1,1],[2]], 3=>[[1, 1, 1], [1, 2], [2, 1],[3]]}
     @super_cache = {1=>[[1]], 2=>[[1,1],[2]], 3=>[[1, 1, 1], [1, 2], [2, 1],[3]]}
     @maze_cache = []
+    @coins = []
   end
 
   def blair_nums(n)
-    return @blair_cache[n] if @blair_cache[n]
-    ans = blair_nums(n-1) + blair_nums(n-2) + ((n-1)*2+1)
-    @blair_cache[n] = ans
-    @blair_cache[n]
+    # return @blair_cache[n] if @blair_cache[n]
+    # ans = blair_nums(n-1) + blair_nums(n-2) + ((n-1)*2+1)
+    # @blair_cache[n] = ans
+    # @blair_cache[n]
+    cache = build_blairs(n)
+    cache[n]
+  end
+
+  def build_blairs(n)
+    cache = {1=>1, 2=> 2}
+    return cache if n <= 2
+    (3..n).step do |i|
+      next_blair = cache[i-1] + cache[i-2] + 2*i - 1
+      cache[i] = next_blair
+    end
+    cache
   end
 
   def frog_hops(n)
@@ -59,8 +72,51 @@ class DynamicProgramming
 
   end
 
-  def make_change(amt, coins)
+  def make_change(target, coins)
+    # return [] if amt == 0
+    # return nil if coins.empty?
+    # return nil if amt < coins.first
+    # return nil if amt > 999
+    # result = []
+    # until remaining == 0
+    #   combo = []
+    #   coins.each do |coin|
+    #     if coin.last >
+    #     remaining = amt - coin
+    #     combo << coin
+    #     combo << make_change(remaining,coin)
+    #
+    #   end
+    #   combo = make_change(amt-(k*coins.first),coins.drop(1))
+    #   k += 1
+    #   combo_array << combo
+    #   p 'combo_array'
+    #   p combo_array
+    # end
+    #
+    # p result
+return [] if target == 0
+return nil if coins.none? { |coin| coin <= target }
+return nil if target > 999
+coins = coins.sort.reverse
+
+best_change = nil
+coins.each_with_index do |coin, index|
+  next if coin > target
+  remainder = target - coin
+  best_remainder = make_change(remainder, coins.drop(index))
+
+  next if best_remainder.nil?
+
+  this_change = [coin] + best_remainder
+
+  if (best_change.nil? || (this_change.count < best_change.count))
+    best_change = this_change
   end
+end
+
+  best_change ? best_change.sort : nil
+end
 
   def maze_solver(maze, start_pos, end_pos)
     @maze_cache << start_pos unless @maze_cache.last == start_pos
@@ -87,4 +143,5 @@ class DynamicProgramming
     end
     @maze_cache
   end
+
 end

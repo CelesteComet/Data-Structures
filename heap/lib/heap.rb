@@ -67,9 +67,6 @@ class BinaryMinHeap
 
   end
 
-  def self.find_child_index(array,child_indexes,&prc)
-
-  end
 
   def self.heapify_up(array, child_idx, len = array.length, &prc)
     prc ||= Proc.new {|el,el2| el <=> el2 }

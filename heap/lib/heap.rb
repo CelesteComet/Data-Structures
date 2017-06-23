@@ -2,7 +2,7 @@ class BinaryMinHeap
   attr_reader :store, :prc
 
   def initialize(&prc)
-    @store = store
+    @store = []
     @prc = prc
   end
 
@@ -11,19 +11,19 @@ class BinaryMinHeap
   end
 
   def extract
-
-  end
-
-  def swap(first_idx, second_idx)
-
+    @store[-1], @store[0] = @store[0] , @store[-1]
+    val = @store.pop
+    BinaryMinHeap.heapify_down(@store,0, count, &@prc)
+    val
   end
 
   def peek
-
+    @store.first
   end
 
   def push(val)
-
+    @store << val
+    BinaryMinHeap.heapify_up(@store,count-1, count, &@prc)
   end
 
   public
@@ -73,6 +73,7 @@ class BinaryMinHeap
 
   def self.heapify_up(array, child_idx, len = array.length, &prc)
     prc ||= Proc.new {|el,el2| el <=> el2 }
+    return if child_idx == 0
     parent_idx = BinaryMinHeap.parent_index(child_idx)
     if prc.call(array[child_idx], array[parent_idx]) < 0
       array[parent_idx], array[child_idx] = array[child_idx], array[parent_idx]

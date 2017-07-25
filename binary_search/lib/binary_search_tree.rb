@@ -10,7 +10,7 @@ class BinarySearchTree
   end
 
   def insert(value)
-
+    @root = insert_recursive(@root, value)
   end
 
   def find(value, tree_node = @root)
@@ -43,7 +43,15 @@ class BinarySearchTree
 
   private
   # optional helper methods go here:
-  def insert_recursive(root_node,new_node)
+  def insert_recursive(tree_node, value)
+    return BSTNode.new(value) if tree_node == nil
+    if tree_node.value >= value
+      tree_node.left = insert_recursive(tree_node.left, value)
+    else
+      tree_node.right = insert_recursive(tree_node.right, value)
+    end
+
+    tree_node
   end
 # Get max node
 # replace parent node with max node

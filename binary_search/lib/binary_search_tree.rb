@@ -16,24 +16,27 @@ class BinarySearchTree
   def find(value, tree_node = @root)
     return nil if tree_node.nil?
     return tree_node if tree_node.value == value
-    if tree_node.value >= value
-      node = find(value, tree_node.left)
-      return node if node
+    if tree_node.value > value
+      find(value, tree_node.left)
     else
-      node2 = find(value, tree_node.right)
-      return node2 if node2
+      find(value, tree_node.right)
     end
-    nil
   end
 
   def delete(value)
+    @root = delete_from_tree(@root,value)
   end
 
   # helper method for #delete:
   def maximum(tree_node = @root)
+    return tree_node if tree_node.right == nil
+    maximum(tree_node.right)
   end
 
   def depth(tree_node = @root)
+    return 0 if tree_node.nil?
+
+
   end
 
   def is_balanced?(tree_node = @root)
@@ -67,7 +70,33 @@ class BinarySearchTree
 # replace parent node with max node
 # replace max node with left node
 # There will never be a right child for the max_node, since its the max
-  def delete_with_children(node, max_node)
+
+  def delete_from_tree(tree_node, value)
+      node = find(value)
+      remove(node)
+      node
+  end
+
+  def remove(node)
+    if node.left.nil? && node.right.nil?
+      node = nil
+    elsif node.left && node.right.nil?
+      node = node.left
+    elsif node.right && node.left.nil?
+      node = node.right
+    else
+      delete_with_children(node)
+    end
+    node
+  end
+
+  def delete_with_children(node)
+    max_node = maxiumum(node.left)
+    max_node.parent.delete(max_node)
+    node.parent.delete(node)
+    node.parent.insert(max_node)
+    max_node.insert(node.left)
+    max_node.insert(node.right)
   end
 
 end

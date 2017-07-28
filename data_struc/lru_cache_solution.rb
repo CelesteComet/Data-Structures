@@ -14,6 +14,13 @@ class LRUCache
   end
 
   def get(key)
+    if map[key]
+      node = map[key]
+      update_node!(node)
+      node.val
+    else
+      calc!(key)
+    end
   end
 
   def to_s
@@ -24,11 +31,23 @@ class LRUCache
   attr_reader :store, :map
 
   def calc!(key)
+    val = @prc.call(key)
+    new_node = store.append(key, val)
+    map[key] = new_node
+
+    eject! if count > @max
+    val
   end
 
   def update_node!(node)
+    node.remove
+    store.append(node.key, node.val)
   end
 
   def eject!
+    rm_node = store.first
+    rm_node.remove
+    map.delete(rm_node.key)
+    nil
   end
 end

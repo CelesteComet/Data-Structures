@@ -13,6 +13,11 @@ class Node
   end
 
   def remove
+    self.prev.next = self.next if self.prev
+    self.next.prev = self.prev if self.next
+    self.next = nil
+    self.prev = nil
+    self
   end
 
 end
@@ -28,7 +33,10 @@ class LinkedList
   end
 
   def [](i)
-
+    self.each_with_index do |node,j|
+      return node if i == j
+    end
+    nil
   end
 
   def first
@@ -45,8 +53,7 @@ class LinkedList
 
   def get(key)
     self.each do |node|
-      p node
-      return node[key] if node.key == key
+      return node.val if node.key == key
     end
   end
 
@@ -71,10 +78,21 @@ class LinkedList
   end
 
   def update(key, val)
-
+    self.each do |node|
+      node.val = val if node.key == key
+      return node
+    end
   end
 
   def remove(key)
+    if include?(key)
+      self.each do |node|
+        if node.key == key
+          node.remove
+          return node.val
+        end
+      end
+    end
   end
 
   def each

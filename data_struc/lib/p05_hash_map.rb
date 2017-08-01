@@ -8,6 +8,7 @@ class HashMap
 
   def initialize(num_buckets = 8)
     @store = Array.new(num_buckets) { LinkedList.new }
+    @count = 0
   end
 
   def include?(key)
@@ -15,10 +16,12 @@ class HashMap
   end
 
   def set(key, val)
+    resize! if count > num_buckets
     if include?(key)
       @store[bucket(key)].update(key,val)
     else
       @store[bucket(key)].append(key,val)
+      @count += 1
     end
   end
 
@@ -29,9 +32,18 @@ class HashMap
   end
 
   def delete(key)
+    if include?(key)
+      @store[bucket(key)].remove(key)
+      @count -= 1
+    end
   end
 
   def each
+    @store.each do |link|
+      link.each do |node|
+        yield node.key, node.val
+      end
+    end
   end
 
   # def to_s
@@ -52,6 +64,15 @@ class HashMap
   end
 
   def resize!
+    old_store = @store
+    @store = Array.new(num_buckets*2) {LinkedList.new}
+    @count = 0
+    old_store.each do |link|
+      link.each do |node|
+        set(node.key,node.val)
+      end
+    end
+    @store
   end
 
   def bucket(key)

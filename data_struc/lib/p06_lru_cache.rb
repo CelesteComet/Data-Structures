@@ -3,24 +3,25 @@ require_relative 'p04_linked_list'
 
 class LRUCache
   def initialize(max, prc)
-    @map = HashMap.new
+    @map = HashMap.new(max)
     @store = LinkedList.new
     @max = max
     @prc = prc
   end
 
   def count
-    map.count
+    @map.count
   end
 
   def get(key)
-    if map[key]
-      node = map[key]
+    if @map.include?(key)
+      node = @map.get(key)
       update_node!(node)
-      node.val
     else
-      calc!(key)
+      eject! if count >= @max
+      node = calc!(key)
     end
+      node.val
   end
 
   def to_s
@@ -32,22 +33,24 @@ class LRUCache
 
   def calc!(key)
     val = @prc.call(key)
-    new_node = store.append(key, val)
-    map[key] = new_node
+    node = @store.append(key,val)
 
-    eject! if count > @max
-    val
+    @map.set(key,node)
+    node
   end
 
   def update_node!(node)
-    node.remove
-    store.append(node.key, node.val)
+    @map.delete(node.key)
+    @store.remove(node.key)
+    new_node = @store.append(node.key, node.val)
+    @map.set(node.key,new_node)
+    new_node
   end
 
   def eject!
-    rm_node = store.first
-    rm_node.remove
-    map.delete(rm_node.key)
+    node = @store.first
+    node.remove
+    @map.delete(node.key)
     nil
   end
 end

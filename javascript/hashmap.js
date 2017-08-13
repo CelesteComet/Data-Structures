@@ -42,13 +42,23 @@ class LinkedList {
     return null;
   }
 
-  remove() {
-
+  remove(key) {
+    let node = this.last();
+    while (node.next !== null) {
+      if (node.key === key) {
+        node.next.prev = node.prev;
+        node.prev.next = node.next;
+        return node.val;
+      }
+      node = node.next;
+    }
+    return null;
   }
 
 }
 
 class Node {
+
   constructor(key,val) {
     this.key = key;
     this.val = val;
@@ -56,16 +66,20 @@ class Node {
     this.prev = null;
   }
 
-  remove() {
-  }
-
 }
 
 class HashMap {
   constructor() {
-    this.store = Array(8);
+    this.store = new Array(8);
     this.length = this.store.length;
     this.count = 0;
+    this.addLinks();
+  }
+
+  addLinks() {
+    for (var i = 0; i < this.length; i++) {
+      this.store[i] = new LinkedList;
+    }
   }
 
   insert(key,val) {
@@ -104,11 +118,14 @@ let newLL = new LinkedList;
 newLL.add("abc",2);
 newLL.add("bcd",5);
 newLL.add("gbc",5);
+newLL.remove("bcd");
 console.log(newLL.get("abc"));
 console.log(newLL.get("bcd"));
 console.log(newLL.first);
+console.log(newLL.last);
 
-// let newHash = new HashMap;
+let newHash = new HashMap;
+console.log(newHash.store);
 // newHash.insert("abc",2);
 // newHash.insert("bcd",4);
 // newHash.insert("asdf",5);

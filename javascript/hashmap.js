@@ -8,19 +8,38 @@ class LinkedList {
   }
 
   first() {
-
+    return this.tail.prev;
   }
 
   last() {
-
+    return this.head.next;
   }
 
-  add() {
-
+  add(key,val) {
+    const newNode = new Node(key, val);
+    if (this.head.next === this.tail) {
+      this.head.next = newNode;
+      this.tail.prev = newNode;
+      newNode.next = this.tail;
+      newNode.prev = this.head;
+    } else {
+      this.first.prev = newNode;
+      newNode.next = this.last();
+      this.head.next = newNode;
+      newNode.prev = this.head;
+    }
   }
 
-  get() {
-
+  get(key) {
+    let node = this.last();
+    while (node.next !== null) {
+      if (node.key === key) {
+        return node.val;
+      } else {
+        node = node.next;
+      }
+    }
+    return null;
   }
 
   remove() {
@@ -81,13 +100,21 @@ class HashMap {
 
 }
 
-let newHash = new HashMap;
-newHash.insert("abc",2);
-newHash.insert("bcd",4);
-newHash.insert("asdf",5);
-newHash.insert("abc",1);
+let newLL = new LinkedList;
+newLL.add("abc",2);
+newLL.add("bcd",5);
+newLL.add("gbc",5);
+console.log(newLL.get("abc"));
+console.log(newLL.get("bcd"));
+console.log(newLL.first);
 
-console.log(newHash['abc']);
-console.log(newHash['bcd']);
-console.log(newHash['asdf']);
-console.log(newHash.hash('abc'));
+// let newHash = new HashMap;
+// newHash.insert("abc",2);
+// newHash.insert("bcd",4);
+// newHash.insert("asdf",5);
+// newHash.insert("abc",1);
+//
+// console.log(newHash['abc']);
+// console.log(newHash['bcd']);
+// console.log(newHash['asdf']);
+// console.log(newHash.hash('abc'));

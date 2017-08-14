@@ -138,11 +138,14 @@ class HashMap {
 
   resize() {
     let oldBucket = this.store;
-    this.store = Array.new(this.length*2);
+    this.length = this.length*2;
+    this.store = Array(this.length);
     this.addLinks();
     this.count = 0;
     oldBucket.forEach( link => {
-      link
+      link.each(node => {
+        this.insert(node.key, node.val);
+      });
     });
   }
 
@@ -161,13 +164,23 @@ console.log(newLL.get("gbc"));
 // console.log(newLL.first);
 // console.log(newLL.last);
 
-// let newHash = new HashMap;
-// console.log(newHash.store);
-// newHash.insert("abc",2);
-// newHash.insert("bcd",4);
-// newHash.insert("asdf",5);
-// newHash.insert("abc",1);
-//
-// console.log(newHash.get('abc'));
-// console.log(newHash.get('bcd'));
-// console.log(newHash.get('asdf'));
+let newHash = new HashMap;
+console.log(newHash.store);
+newHash.insert("abc",2);
+newHash.insert("bcd",4);
+newHash.insert("asdf",5);
+newHash.insert("abu",1);
+newHash.insert("aby",1);
+newHash.insert("abk",1);
+newHash.insert("abj",1);
+newHash.insert("abh",1);
+newHash.insert("abg",1);
+newHash.insert("fbg",1);
+
+console.log(newHash.get('abc'));
+console.log(newHash.get('bcd'));
+console.log(newHash.get('asdf'));
+console.log(newHash.store);
+console.log(newHash.get('abc'));
+console.log(newHash.get('abg'));
+console.log(newHash.get('fbg'));

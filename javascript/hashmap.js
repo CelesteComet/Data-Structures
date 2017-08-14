@@ -23,36 +23,55 @@ class LinkedList {
       newNode.next = this.tail;
       newNode.prev = this.head;
     } else {
-      this.first.prev = newNode;
       newNode.next = this.last();
-      this.head.next = newNode;
       newNode.prev = this.head;
+      this.last().prev = newNode;
+      this.head.next = newNode;
+    }
+  }
+
+  update(key,val){
+    this.each(node => {
+      if (node.key === key) {
+        node.key = val;
+        return node.val;
+      }
+    });
+  }
+
+  each(callback) {
+    let node = this.last();
+    while (node.next !== null) {
+      callback(node);
+      node = node.next;
     }
   }
 
   get(key) {
-    let node = this.last();
-    while (node.next !== null) {
+    let targetNode = null;
+    this.each(node => {
       if (node.key === key) {
-        return node.val;
-      } else {
-        node = node.next;
+        targetNode = node.val;
       }
-    }
-    return null;
+    });
+    return targetNode;
+  }
+
+  find(key) {
+    let targetNode = null;
+    this.each(node => {
+      if (node.key === key) {
+        targetNode = node;
+      }
+    });
+    return targetNode;
   }
 
   remove(key) {
-    let node = this.last();
-    while (node.next !== null) {
-      if (node.key === key) {
-        node.next.prev = node.prev;
-        node.prev.next = node.next;
-        return node.val;
-      }
-      node = node.next;
-    }
-    return null;
+    let node = this.find(key);
+    node.next.prev = node.prev;
+    node.prev.next = node.next;
+    return node.val;
   }
 
 }
@@ -83,9 +102,15 @@ class HashMap {
   }
 
   insert(key,val) {
-    // if (this.store[this.hash(key)]) {
-    //
-    // }
+    if (this.store[this.hash(key)].get(key) !== null ) {
+      this.store[this.hash(key)].update(key,val);
+    } else {
+      this.store[this.hash(key)].add(key,val);
+    }
+    this.count++;
+    if (this.count > this.length) {
+      this.resize();
+    }
   }
 
   hash(key) {
@@ -100,15 +125,25 @@ class HashMap {
   }
 
   remove(key) {
-
+    if (this.store[this.hash(key)].get(key) !== null ) {
+      this.store[this.hash(key)].remove(key);
+    } else {
+      return false;
+    }
   }
 
   get(key) {
-
+    return this.store[this.hash(key)].get(key);
   }
 
   resize() {
-
+    let oldBucket = this.store;
+    this.store = Array.new(this.length*2);
+    this.addLinks();
+    this.count = 0;
+    oldBucket.forEach( link => {
+      link
+    });
   }
 
 
@@ -120,18 +155,19 @@ newLL.add("bcd",5);
 newLL.add("gbc",5);
 newLL.remove("bcd");
 console.log(newLL.get("abc"));
+console.log(newLL.get("gbc"));
 console.log(newLL.get("bcd"));
-console.log(newLL.first);
-console.log(newLL.last);
+console.log(newLL.get("gbc"));
+// console.log(newLL.first);
+// console.log(newLL.last);
 
-let newHash = new HashMap;
-console.log(newHash.store);
+// let newHash = new HashMap;
+// console.log(newHash.store);
 // newHash.insert("abc",2);
 // newHash.insert("bcd",4);
 // newHash.insert("asdf",5);
 // newHash.insert("abc",1);
 //
-// console.log(newHash['abc']);
-// console.log(newHash['bcd']);
-// console.log(newHash['asdf']);
-// console.log(newHash.hash('abc'));
+// console.log(newHash.get('abc'));
+// console.log(newHash.get('bcd'));
+// console.log(newHash.get('asdf'));
